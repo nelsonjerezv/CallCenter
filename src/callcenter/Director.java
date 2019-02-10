@@ -26,8 +26,11 @@ public class Director implements Runnable  {
     @Override
     public void run() {
         System.out.println("Director " + name + " created.");
+        // duracion de llamada 
         Random duration = new Random(); 
-        while(!CallCenter.callExServ2.isTerminated()){
+        
+        // ciclo para que hebra vuelva a buscar por llamadas para responder
+        while(!CallCenter.callExServ.isTerminated()){
             try {
                 if (!directorQueue.isEmpty()) {
                     try {

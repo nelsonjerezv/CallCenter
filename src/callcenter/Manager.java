@@ -1,14 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package callcenter;
 
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -28,15 +21,20 @@ public class Manager implements Runnable  {public String name;
     @Override
     public void run() {
         System.out.println("Manager " + name + " created.");
+        // random de tiempo de duracion de llamada
         Random duration = new Random(); 
+        // random si logra resolver la llamada
         Random solved = new Random(); 
-        while(!CallCenter.callExServ2.isTerminated()){
-            try {
+        
+        // ciclo para que hebra siga buscando llamadas
+        while(!CallCenter.callExServ.isTerminated()){
+            try {                
                 if (!managerQueue.isEmpty()) {
                     try {
                         Call currentCall = managerQueue.take();
                         System.out.println("Manager " + name + " taking call " + currentCall.id + ".");
                         currentCall.answer();
+                        // duración de llamada
                         Thread.sleep(duration.nextInt((CallCenter.CALL_MAX_DURATION - CallCenter.CALL_MIN_DURATION) + 1));
                         if(solved.nextBoolean()){
                             System.out.println("Manager " + name + " solved call " + currentCall.id + ".");
@@ -51,7 +49,8 @@ public class Manager implements Runnable  {public String name;
                         System.out.println("Manager " + name + " couldn't take call.");
                     }
                 }
-                Thread.sleep(1000);
+                // tiempo de espera para volver a buscar llamadas para responder
+                Thread.sleep(100);
             } catch (InterruptedException ex) {
                 System.out.println("Manager " + name + " couldn't poll.");
             }
